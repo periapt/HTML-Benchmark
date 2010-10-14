@@ -6,12 +6,10 @@ use Carp;
 
 use version; our $VERSION = qv('0.0.1');
 
-# Other recommended modules (uncomment to use):
-#  use IO::Prompt;
-#  use Perl6::Export;
-#  use Perl6::Slurp;
-#  use Perl6::Say;
-
+use Class::XSAccessor
+    replace => 1,
+    constructor => 'new',
+    accessors => [];
 
 # Module implementation here
 

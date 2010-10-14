@@ -12,6 +12,7 @@ my $builder = Module::Build->new(
     },
     requires => {
         'version'    => 0,
+        'Class::XSAccessor' => 0,
     },
     create_readme => 1,
     create_makefile_pl => 'traditional',
