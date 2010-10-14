@@ -1,10 +1,10 @@
-use Test::More tests => 3;
-use Test::SharedFork;
+use Test::More tests => 2;
 use strict;
 use warnings;
 use Carp;
 use POSIX qw(SIGINT);
 use Tie::ShareLite qw(:lock);
+use CGI;
 
 my %shared;
 my $ipc = tie %shared, 'Tie::ShareLite',
@@ -18,8 +18,14 @@ if ($pid == 0) {
     $ipc->lock(LOCK_EX);
     $shared{url} = $daemon->url;
     $ipc->unlock;
-    isa_ok($daemon, 'HTTP::Daemon');
     while(my $conn = $daemon->accept) {
+        while(my $request = $conn->get_request) {
+           my $html = CGI->start_html;
+           $html .= CGI->h1($request->uri);
+           $html .= CGI->end_html;
+           my $response = HTTP::Response->new(200, 'hello', ['Content-Type'=>'text/html'], $html);
+           $conn->send_response($response);
+        }
         $conn->close;
     }
 }
@@ -41,6 +47,7 @@ elsif ($pid) {
         print $response->status_line;
     }
     kill SIGINT, $pid;
+    waitpid($pid,0);
 }
 else {
     croak $!;
