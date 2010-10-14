@@ -1,4 +1,5 @@
 package HTML::Benchmark;
+use base LWP::UserAgent;
 
 use warnings;
 use strict;

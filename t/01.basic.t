@@ -30,8 +30,8 @@ if ($pid == 0) {
     }
 }
 elsif ($pid) {
-    use LWP::UserAgent;
-    my $ua = LWP::UserAgent->new;
+    use HTML::Benchmark;
+    my $ua = HTML::Benchmark->new;
     my $url = undef;
     while(not exists $shared{url}) {
         sleep 1;
