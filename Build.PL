@@ -1,0 +1,20 @@
+use strict;
+use warnings;
+use Module::Build;
+
+my $builder = Module::Build->new(
+    module_name         => 'HTML::Benchmark',
+    license             => 'perl',
+    dist_author         => 'Nicholas Bamber <nicholas@periapt.co.uk>',
+    dist_version_from   => 'lib/HTML/Benchmark.pm',
+    build_requires => {
+        'Test::More' => 0,
+    },
+    requires => {
+        'version'    => 0,
+    },
+    create_makefile_pl => 'traditional',
+    add_to_cleanup      => [ 'HTML-Benchmark-*' ],
+);
+
+$builder->create_build_script();
