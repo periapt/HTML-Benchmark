@@ -32,6 +32,16 @@ sub benchmark {
     my $status = $response->code;
     print "Status: $status\n";
     my $type = $response->header('Content-Type');
+    if ($type =~ m{
+                    \A
+                    ([\w\/\-]+)
+                    ;
+                    \s+
+                    charset=
+                }xms
+    ) {
+        $type = $1;
+    }
     print "Type: $type\n";
     my $length = 'n/a';
     if ($response->is_success) {
