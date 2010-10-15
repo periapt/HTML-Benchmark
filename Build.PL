@@ -18,8 +18,13 @@ my $builder = Module::Build->new(
         'version'    => 0,
         'Class::XSAccessor' => 0,
         'Getopt::Euclid' => 0,
+        'Perl6::Form' => 0,
+        'Time::HiRes' => 0,
+        'Format::Human::Bytes'=>0,
+        # libwww-perl stuff here
         'HTTP::Daemon' => 0,
         'LWP::UserAgent' => 0,
+        'HTTP::Response' => 0,
     },
     create_readme => 1,
     create_makefile_pl => 'traditional',

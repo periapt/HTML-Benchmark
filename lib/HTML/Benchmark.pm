@@ -1,5 +1,7 @@
 package HTML::Benchmark;
 use LWP::UserAgent;
+use Time::HiRes qw(time tv_interval);
+use Format::Human::Bytes;
 
 use warnings;
 use strict;
@@ -25,14 +27,28 @@ sub new {
 sub benchmark {
     my $self = shift;
     my $url = shift;
-    my $response = $self->useragent->get($url);
+    my ($response, $interval) = $self->get_and_time($url);
+    print "Interval: $interval\n";
+    my $status = $response->code;
+    print "Status: $status\n";
+    my $type = $response->header('Content-Type');
+    print "Type: $type\n";
+    my $length = 'n/a';
     if ($response->is_success) {
-        print $response->decoded_content;
+        $length
+            = Format::Human::Bytes::base2(length $response->decoded_content);
     }
-    else {
-        print $response->status_line;
-    }
+    print "Size: $length\n";
     return;
+}
+
+sub get_and_time {
+    my $self = shift;
+    my $url = shift;
+    my $pretime = time;
+    my $response = $self->useragent->get($url);
+    my $interval = time - $pretime;
+    return ($response, $interval);
 }
 
 1; # Magic true value required at end of module
@@ -49,19 +65,17 @@ This document describes HTML::Benchmark version 0.0.1
 =head1 SYNOPSIS
 
     use HTML::Benchmark;
-
-=for author to fill in:
-    Brief code example(s) here showing commonest usage(s).
-    This section will be as far as many users bother reading
-    so make it as educational and exeplary as possible.
-  
+    my $ua = HTML::Benchmark->new;
+    $ua->benchmark('http://www.periapt.co.uk');
   
 =head1 DESCRIPTION
 
-=for author to fill in:
-    Write a full description of the module and its features here.
-    Use subsections (=head2, =head3) as appropriate.
-
+This module provides a backend to the website perfomance analysis tool
+L<html_benchmark>. Most of the methods are for configuration purposes.
+The signature method C<benchmark> takes a single page and gets a realistic
+and detailed analysis of the performance of that webpage and handles 
+those results as directed. Typically the action is either to write the results
+to a database for further analysis or to display them.
 
 =head1 INTERFACE 
 
