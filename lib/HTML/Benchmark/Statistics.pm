@@ -16,7 +16,6 @@ sub new {
     my $self = {
         raw => {},
         combined => {},
-        statistics => {},
     };
     bless $self, $class;
     return $self;
@@ -37,7 +36,7 @@ sub add_data {
         label => 1,
         date => {mandatory => 1, isa=>'DateTime'},
     });       
-    my $raw_key = _compile_key(\%args, ['website','path','label','run_uuid']);
+    my $raw_key = _compile_key(\%args, ['website','path','item','run_uuid']);
     $self->{raw}->{$raw_key} = \%args;
 
     return unless $args{succeeded};
@@ -72,55 +71,60 @@ sub add_data {
             );
     }
 
-    my $statistics_key = _compile_key(\%args, ['website','path']);
-    if (not exists $self->{statistics}->{$statistics_key}) {
-        my $size_stats = Statistics::Descriptive::Sparse->new;
-        $size_stats->add_data($args{size});
-        my $download_stats = Statistics::Descriptive::Sparse->new;
-        $download_stats->add_data($args{download_time});
-        $self->{statistics}->{$statistics_key} = {
-            website => $args{website},
-            path => $args{path},
-            size=> $size_stats,
-            download_time => $download_stats,
-            label => $args{label},
-            min_date => $args{date},
-            max_date => $args{date},
-        };
-    }
-    else {
-        $self->{combined}->{$combined_key}->{size}
-            ->add_data($args{size});
-        $self->{combined}->{$combined_key}->{download_time}
-            ->add_data($args{download_time});
-        $self->{combined}->{$combined_key}->{min_date}
-            = _min_date(
-                $args{date},
-                $self->{combined}->{$combined_key}->{min_date}
-            );
-        $self->{combined}->{$combined_key}->{max_date}
-            = _max_date(
-                $args{date},
-                $self->{combined}->{$combined_key}->{max_date}
-            );
-    }
-
     return;
 }
 
 sub get_raw_data {
     my $self = shift;
-    return values %{$self->{raw}};
+    return _sort_by_dates('date', values %{$self->{raw}});
 }
 
 sub get_combined_data {
     my $self = shift;
-    return values %{$self->{combined}};
+    return _sort_by_dates('min_date', values %{$self->{combined}});
 }
 
 sub get_statistics {
     my $self = shift;
-    return values %{$self->{statistics}};
+
+    my %statistics = ();
+    foreach my $k (keys %{$self->{combined}}) {
+        my %args = %{$self->{combined}->{$k}};
+        my $statistics_key = _compile_key(\%args, ['website','path']);
+        if (not exists $statistics{$statistics_key}) {
+            my $size_stats = Statistics::Descriptive::Sparse->new;
+            $size_stats->add_data($args{size});
+            my $download_stats = Statistics::Descriptive::Sparse->new;
+            $download_stats->add_data($args{download_time});
+            $statistics{$statistics_key} = {
+                website => $args{website},
+                path => $args{path},
+                size=> $size_stats,
+                download_time => $download_stats,
+                label => $args{label},
+                min_date => $args{min_date},
+                max_date => $args{max_date},
+            };
+        }
+        else {
+            $statistics{$statistics_key}->{size}
+                ->add_data($args{size});
+            $statistics{$statistics_key}->{download_time}
+                ->add_data($args{download_time});
+            $statistics{$statistics_key}->{min_date}
+                = _min_date(
+                    $args{min_date},
+                    $statistics{$statistics_key}->{min_date}
+                );
+            $statistics{$statistics_key}->{max_date}
+                = _max_date(
+                    $args{max_date},
+                    $statistics{$statistics_key}->{max_date}
+                );
+        }
+    }
+
+    return _sort_by_dates('min_date', values %statistics);
 }
 
 sub _compile_key {
@@ -144,6 +148,21 @@ sub _max_date {
     my $a_date = shift;
     my $b_date = shift;
     return $a_date->subtract_datetime($b_date)->is_positive ? $a_date : $b_date;
+}
+
+sub _cmp_dates {
+    my $a_date = shift;
+    my $b_date = shift;
+    my $c = $a_date->subtract_datetime($b_date);
+    return 1 if $c->is_negative;
+    return -1 if $c->is_positive;
+    return 0;
+}
+
+sub _sort_by_dates {
+    my $field = shift;
+    my @dates = @_;
+    return reverse sort {_cmp_dates($a->{$field},$b->{$field}) } @dates;
 }
 
 1; # Magic true value required at end of module
