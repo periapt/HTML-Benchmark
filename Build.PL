@@ -24,6 +24,8 @@ my $builder = Module::Build->new(
         'DateTime' =>0,
         'MIME::Base64' => 0,
         'URI'=>0,
+        'Params::Validate'=>0,
+        'Statistics::Descriptive' => 0,
         # libwww-perl stuff here
         'HTTP::Daemon' => 0,
         'LWP::UserAgent' => 0,
