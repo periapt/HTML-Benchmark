@@ -1,9 +1,9 @@
 package HTML::Benchmark;
 
 use LWP::UserAgent;
-use Format::Human::Bytes;
 use DateTime;
 use URI;
+use HTML::Benchmark::Statistics;
 
 # Used by get_and_time
 use Time::HiRes qw(time tv_interval);
@@ -22,6 +22,7 @@ use Class::XSAccessor
     replace => 1,
     accessors => [
         'useragent',
+        'statistics',
         'label',
     ];
 
@@ -33,6 +34,7 @@ sub new {
     bless $self, $class;
 
     $self->useragent(LWP::UserAgent->new) if not $self->useragent;
+    $self->statistics(HTML::Benchmark::Statistics->new);
     return $self;
 }
 
@@ -43,14 +45,8 @@ sub benchmark {
     my $website = ($uri->scheme).'://'.($uri->host);
     my $path = $uri->path;
     my $item = $path;
-    print "Website: $website\n";
-    print "Path: $path\n";
-    print "Item: $item\n";
-    print "Class: 0\n";
     my ($response, $interval) = $self->get_and_time($url);
-    print "Interval: $interval\n";
     my $status = $response->code;
-    print "Status: $status\n";
     my $type = $response->header('Content-Type');
     if ($type =~ m{
                     \A
@@ -62,21 +58,26 @@ sub benchmark {
     ) {
         $type = $1;
     }
-    print "Type: $type\n";
     my $length = 'n/a';
     if ($response->is_success) {
-        $length
-            = Format::Human::Bytes::base2(length $response->decoded_content);
+        $length = length $response->decoded_content;
     }
-    print "Size: $length\n";
-    if ($self->label) {
-        my $label = $self->label;
-        print "Label: $label\n";
-    }
-    my $date = DateTime->now()->strftime('%c');
-    print "Date: $date\n";
     my $uuid = $self->generate_uuid;
-    print "UUID: $uuid\n";
+
+    $self->statistics->add_data(
+        website => $website,
+        path => $path,
+        item => $item,
+        download_time => $interval,
+        status => $status,
+        succeeded => $response->is_success,
+        type => $type,
+        size => $length,
+        label => $self->label,
+        date => DateTime->now(),
+        run_uuid => $uuid,
+    );
+
     return;
 }
 
@@ -152,6 +153,10 @@ object.
 
 This is a bit of free text that is passed straight through. It can 
 be used to group related test results.
+
+=head2 C<statistics>
+
+This returns the object that handles the statistics.
 
 =head1 DIAGNOSTICS
 
