@@ -11,7 +11,10 @@ use version; our $VERSION = qv('0.0.1');
 
 use Class::XSAccessor
     replace => 1,
-    accessors => ['useragent'];
+    accessors => [
+        'useragent',
+        'label',
+    ];
 
 # Module implementation here
 
@@ -49,6 +52,10 @@ sub benchmark {
             = Format::Human::Bytes::base2(length $response->decoded_content);
     }
     print "Size: $length\n";
+    if ($self->label) {
+        my $label = $self->label;
+        print "Label: $label\n";
+    }
     return;
 }
 
@@ -102,6 +109,11 @@ results or writes them to the database.
 
 This returns or sets the user agent. By default it will be a L<LWP::UserAgent>
 object.
+
+=head2 C<label>
+
+This is a bit of free text that is passed straight through. It can 
+be used to group related test results.
 
 =head1 DIAGNOSTICS
 

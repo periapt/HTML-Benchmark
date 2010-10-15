@@ -4,7 +4,12 @@ use warnings;
 use Getopt::Euclid;
 use HTML::Benchmark;
 
-my $ua = HTML::Benchmark->new;
+my %args = ();
+if ($ARGV{'--label'}) {
+    $args{label} = $ARGV{'--label'};
+}
+
+my $ua = HTML::Benchmark->new(%args);
 $ua->benchmark($ARGV{'--page'});
 
 __END__
@@ -34,6 +39,10 @@ of websites.
 =item --page <url>
 
 Single website to test
+
+=item --label <string>
+
+Label to group related tests.
 
 =item --version
 
