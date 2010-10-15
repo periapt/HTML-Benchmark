@@ -1,4 +1,4 @@
-use Test::More tests => 13;
+use Test::More tests => 18;
 use strict;
 use warnings;
 use Carp;
@@ -77,3 +77,20 @@ is_deeply($results, {
     min_date=>DateTime->new(year=>'1977'),
     max_date=>DateTime->new(year=>'1977'),
 }, 'one datum results');
+
+is(HTML::Benchmark::Statistics::_compile_key({
+    ihpq=>'ougwou',
+    qwdhq=>'pqhihfqf',
+    uqhwehdq=>'wquoqhd',
+    uqowd=>'pqihdip',
+    quodhqo=>'hqphdpq',
+}, ['qwdhq','ihpq']), 'pqhihfqf|ougwou|', 'key generation');
+is(HTML::Benchmark::Statistics::_min_date(
+    DateTime->new(year=>1999), DateTime->new(year=>2000))->year, 1999, 'year 1999');
+is(HTML::Benchmark::Statistics::_min_date(
+    DateTime->new(year=>1999), DateTime->new(year=>1998))->year, 1998, 'year 1998');
+is(HTML::Benchmark::Statistics::_max_date(
+    DateTime->new(year=>1999), DateTime->new(year=>2000))->year, 2000, 'year 2000');
+is(HTML::Benchmark::Statistics::_max_date(
+    DateTime->new(year=>1999), DateTime->new(year=>1998))->year, 1999, 'year 1999');
+

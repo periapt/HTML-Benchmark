@@ -137,13 +137,13 @@ sub _compile_key {
 sub _min_date {
     my $a_date = shift;
     my $b_date = shift;
-    return $a->subtract_date($b)->is_negative ? $b : $a;
+    return $a_date->subtract_datetime($b_date)->is_negative ? $a_date : $b_date;
 }
 
 sub _max_date {
     my $a_date = shift;
     my $b_date = shift;
-    return $a->subtract_date($b)->is_positive ? $a : $b;
+    return $a_date->subtract_datetime($b_date)->is_positive ? $a_date : $b_date;
 }
 
 1; # Magic true value required at end of module

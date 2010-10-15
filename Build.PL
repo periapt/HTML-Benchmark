@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'Tie::ShareLite' => 0,
+        'Readonly' => 0,
     },
     script_files=>      [
         'bin/html_benchmark',
