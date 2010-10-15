@@ -3,6 +3,8 @@ use LWP::UserAgent;
 use Time::HiRes qw(time tv_interval);
 use Format::Human::Bytes;
 use DateTime;
+use UUID qw(generate);
+use MIME::Base64;
 
 use warnings;
 use strict;
@@ -59,6 +61,10 @@ sub benchmark {
     }
     my $date = DateTime->now()->strftime('%c');
     print "Date: $date\n";
+    my $uuid = "";
+    generate($uuid);
+    $uuid = encode_base64($uuid);
+    print "UUID: $uuid\n";
     return;
 }
 
