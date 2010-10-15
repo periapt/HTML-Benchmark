@@ -46,7 +46,7 @@ sub add_data {
     if (not exists $self->{combined}->{$combined_key}) {
         $self->{combined}->{$combined_key} = {
             website => $args{website},
-            path => $args{website},
+            path => $args{path},
             run_uuid => $args{run_uuid},
             size=> $args{size},
             download_time => $args{download_time},
@@ -80,7 +80,7 @@ sub add_data {
         $download_stats->add_data($args{download_time});
         $self->{statistics}->{$statistics_key} = {
             website => $args{website},
-            path => $args{website},
+            path => $args{path},
             size=> $size_stats,
             download_time => $download_stats,
             label => $args{label},
@@ -208,7 +208,7 @@ The fields expected are as follows:
 
 =head2 C<get_raw_data>
 
-This returns an array reference of all the raw data.
+This returns an array of all the raw data.
 
 =head2 C<get_combined_data>
 
