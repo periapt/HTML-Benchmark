@@ -2,6 +2,7 @@ package HTML::Benchmark;
 use LWP::UserAgent;
 use Time::HiRes qw(time tv_interval);
 use Format::Human::Bytes;
+use DateTime;
 
 use warnings;
 use strict;
@@ -56,6 +57,8 @@ sub benchmark {
         my $label = $self->label;
         print "Label: $label\n";
     }
+    my $date = DateTime->now()->strftime('%c');
+    print "Date: $date\n";
     return;
 }
 

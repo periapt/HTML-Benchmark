@@ -21,6 +21,7 @@ my $builder = Module::Build->new(
         'Perl6::Form' => 0,
         'Time::HiRes' => 0,
         'Format::Human::Bytes'=>0,
+        'DateTime' =>0,
         # libwww-perl stuff here
         'HTTP::Daemon' => 0,
         'LWP::UserAgent' => 0,
