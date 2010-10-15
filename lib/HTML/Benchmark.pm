@@ -1,8 +1,14 @@
 package HTML::Benchmark;
+
 use LWP::UserAgent;
-use Time::HiRes qw(time tv_interval);
 use Format::Human::Bytes;
 use DateTime;
+use URI;
+
+# Used by get_and_time
+use Time::HiRes qw(time tv_interval);
+
+# Used by generate_uuid
 use UUID qw(generate);
 use MIME::Base64;
 
@@ -33,6 +39,14 @@ sub new {
 sub benchmark {
     my $self = shift;
     my $url = shift;
+    my $uri = URI->new($url);
+    my $website = ($uri->scheme).'://'.($uri->host);
+    my $path = $uri->path;
+    my $item = $path;
+    print "Website: $website\n";
+    print "Path: $path\n";
+    print "Item: $item\n";
+    print "Class: 0\n";
     my ($response, $interval) = $self->get_and_time($url);
     print "Interval: $interval\n";
     my $status = $response->code;
@@ -61,9 +75,7 @@ sub benchmark {
     }
     my $date = DateTime->now()->strftime('%c');
     print "Date: $date\n";
-    my $uuid = "";
-    generate($uuid);
-    $uuid = encode_base64($uuid);
+    my $uuid = $self->generate_uuid;
     print "UUID: $uuid\n";
     return;
 }
@@ -75,6 +87,14 @@ sub get_and_time {
     my $response = $self->useragent->get($url);
     my $interval = time - $pretime;
     return ($response, $interval);
+}
+
+sub generate_uuid {
+    my $self = shift;
+    my $uuid = "";
+    generate($uuid);
+    $uuid = encode_base64($uuid);
+    return $uuid;
 }
 
 1; # Magic true value required at end of module
@@ -113,6 +133,15 @@ This constructor can initialize the various fields described below.
 
 This is the key method. It runs the experiments and either displays the
 results or writes them to the database.
+
+=head2 C<get_and_time>
+
+This is a wrapper around L<LWP::UserAgent>'s get method. It returns a
+L<HTTP::Response> object and the time taken to obtain the response.
+
+=head2 C<generate_uuid>
+
+This generates a base64 encoded unique identifier.
 
 =head2 C<useragent>
 
