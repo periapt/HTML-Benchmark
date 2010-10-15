@@ -2,6 +2,10 @@
 use strict;
 use warnings;
 use Getopt::Euclid;
+use HTML::Benchmark;
+
+my $ua = HTML::Benchmark->new;
+$ua->benchmark($ARGV{'--page'});
 
 __END__
 
@@ -22,6 +26,24 @@ of websites.
 =head1 USAGE
 
     html_benchmark [options]
+
+=head1 OPTIONS
+
+=over
+
+=item --page <url>
+
+Single website to test
+
+=item --version
+
+=item --usage
+
+=item --help
+
+=item --man
+
+=back
 
 =head1 BUGS AND LIMITATIONS
 

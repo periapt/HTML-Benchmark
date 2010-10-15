@@ -1,9 +1,15 @@
+bin/html_benchmark
 Build.PL
 Changes
-MANIFEST
-README
+ignore.txt
 lib/HTML/Benchmark.pm
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+META.yml
+README
 t/00.load.t
+t/01.basic.t
 t/changes.t
 t/manifest.t
 t/perlcritic.t
@@ -11,5 +17,3 @@ t/pod-coverage.t
 t/pod.t
 t/podspell.t
 t/prereq.t
-Makefile.PL
-META.yml

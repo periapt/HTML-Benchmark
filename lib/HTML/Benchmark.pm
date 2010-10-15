@@ -1,5 +1,5 @@
 package HTML::Benchmark;
-use base LWP::UserAgent;
+use LWP::UserAgent;
 
 use warnings;
 use strict;
@@ -9,24 +9,42 @@ use version; our $VERSION = qv('0.0.1');
 
 use Class::XSAccessor
     replace => 1,
-    constructor => 'new',
-    accessors => [];
+    accessors => ['useragent'];
 
 # Module implementation here
 
+sub new {
+    my $class = shift;
+    my $self = { @_ };
+    bless $self, $class;
+
+    $self->useragent(LWP::UserAgent->new) if not $self->useragent;
+    return $self;
+}
+
+sub benchmark {
+    my $self = shift;
+    my $url = shift;
+    my $response = $self->useragent->get($url);
+    if ($response->is_success) {
+        print $response->decoded_content;
+    }
+    else {
+        print $response->status_line;
+    }
+    return;
+}
 
 1; # Magic true value required at end of module
 __END__
 
 =head1 NAME
 
-HTML::Benchmark - [One line description of module's purpose here]
-
+HTML::Benchmark - Performance analysis of web pages and sites
 
 =head1 VERSION
 
 This document describes HTML::Benchmark version 0.0.1
-
 
 =head1 SYNOPSIS
 
@@ -47,12 +65,19 @@ This document describes HTML::Benchmark version 0.0.1
 
 =head1 INTERFACE 
 
-=for author to fill in:
-    Write a separate section listing the public components of the modules
-    interface. These normally consist of either subroutines that may be
-    exported, or methods that may be called on objects belonging to the
-    classes provided by the module.
+=head2 C<new>
 
+This constructor can initialize the various fields described below.
+
+=head2 C<benchmark>
+
+This is the key method. It runs the experiments and either displays the
+results or writes them to the database.
+
+=head2 C<useragent>
+
+This returns or sets the user agent. By default it will be a L<LWP::UserAgent>
+object.
 
 =head1 DIAGNOSTICS
 

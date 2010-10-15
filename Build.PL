@@ -9,14 +9,17 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/HTML/Benchmark.pm',
     build_requires => {
         'Test::More' => 0,
+        'Tie::ShareLite' => 0,
     },
     script_files=>      [
-        'html_benchmark',
+        'bin/html_benchmark',
     ],
     requires => {
         'version'    => 0,
         'Class::XSAccessor' => 0,
         'Getopt::Euclid' => 0,
+        'HTTP::Daemon' => 0,
+        'LWP::UserAgent' => 0,
     },
     create_readme => 1,
     create_makefile_pl => 'traditional',

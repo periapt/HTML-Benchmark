@@ -1,4 +1,4 @@
-use Test::More tests => 2;
+use Test::More tests => 1;
 use strict;
 use warnings;
 use Carp;
@@ -37,15 +37,8 @@ elsif ($pid) {
         sleep 1;
     }
     $url = $shared{url};
-    isa_ok($ua, 'LWP::UserAgent');
-    my $response = $ua->get($url);
-    isa_ok($response, 'HTTP::Response');
-    if ($response->is_success) {
-        print $response->decoded_content;
-    }
-    else {
-        print $response->status_line;
-    }
+    isa_ok($ua, 'HTML::Benchmark');
+    $ua->benchmark($url);
     kill SIGINT, $pid;
     waitpid($pid,0);
 }
