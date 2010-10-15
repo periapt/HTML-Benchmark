@@ -1,4 +1,4 @@
-use Test::More tests => 39;
+use Test::More tests => 35;
 use strict;
 use warnings;
 use Carp;

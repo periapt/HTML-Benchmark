@@ -3,6 +3,7 @@ Build.PL
 Changes
 ignore.txt
 lib/HTML/Benchmark.pm
+lib/HTML/Benchmark/Statistics.pm
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
@@ -10,6 +11,7 @@ META.yml
 README
 t/00.load.t
 t/01.basic.t
+t/02.stats.t
 t/changes.t
 t/manifest.t
 t/perlcritic.t

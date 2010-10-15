@@ -116,10 +116,10 @@ This document describes HTML::Benchmark version 0.0.1
   
 =head1 DESCRIPTION
 
-This module provides a backend to the website perfomance analysis tool
+This module provides a back-end to the website performance analysis tool
 L<html_benchmark>. Most of the methods are for configuration purposes.
 The signature method C<benchmark> takes a single page and gets a realistic
-and detailed analysis of the performance of that webpage and handles 
+and detailed analysis of the performance of that web-page and handles 
 those results as directed. Typically the action is either to write the results
 to a database for further analysis or to display them.
 

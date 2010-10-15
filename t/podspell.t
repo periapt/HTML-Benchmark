@@ -31,6 +31,7 @@ Test::Spelling::add_stopwords(qw(   ActionDispatch
                                     CRC
                                     DBD
                                     DBH
+                                    javascript
                                     SQL
                                     DBI
                                     username
