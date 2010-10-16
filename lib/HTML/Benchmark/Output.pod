@@ -1,0 +1,74 @@
+=head1 NAME
+
+HTML::Benchmark::Output - Controlling output
+
+=head1 VERSION
+
+This document describes controlling output for HTML::Benchmark version 0.0.1
+
+=head1 DESCRIPTION
+
+Two output classes come with L<HTML::Benchmark>.
+L<HTML::Benchmark::Output::Form> will display the statistics data 
+to the command line. L<HTML::Benchmark::Output::DBI> will the raw data
+to a L<DBI> handle. Additional arguments needed by the output handler
+are read from the suitably named section of the config file.
+
+A new output handler needs to supply the following:
+
+=over
+
+=item B<namespace> - The module must live below the L<HTML::Benchmark::Output>
+name space.
+
+=item B<constructor> - The constructor should take a L<HTML::Benchmark>
+object as its first argument and the rest of the arguments should be
+key-value pairs which will be read from the relevant section of the
+configuration file.
+
+=item B<output> - The class must define an output method. This can do anything
+required. Any return from this method will be printed to standard output. For
+L<HTML::Benchmark::Output::Form> that is the goal; for 
+L<HTML::Benchmark::Output::DBI> the real action will be on the database
+and what is printed is simply a status message.
+
+=item B<configuration> - Given an C<HTML::Benchmark::Output::X> module
+the config will be in the C<[X]> section of the configuration file.
+
+=back
+
+=head1 AUTHOR
+
+Nicholas Bamber  C<< <nicholas@periapt.co.uk> >>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2010, Nicholas Bamber C<< <nicholas@periapt.co.uk> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the same terms as Perl itself. See L<perlartistic>.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
