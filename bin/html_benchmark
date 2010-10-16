@@ -3,6 +3,7 @@ use strict;
 use warnings;
 use Getopt::Euclid;
 use HTML::Benchmark;
+use HTML::Benchmark::Output::Form;
 
 my %args = ();
 if ($ARGV{'--label'}) {
@@ -11,6 +12,9 @@ if ($ARGV{'--label'}) {
 
 my $ua = HTML::Benchmark->new(%args);
 $ua->benchmark($ARGV{'--page'});
+
+my $output = HTML::Benchmark::Output::Form->new($ua);
+print $output->output;
 
 __END__
 

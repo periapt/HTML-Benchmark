@@ -1,4 +1,4 @@
-package HTML::Benchmark::Output;
+package HTML::Benchmark::Output::Form;
 
 use warnings;
 use strict;
@@ -13,12 +13,20 @@ use version; our $VERSION = qv('0.0.1');
 
 sub new {
     my $class = shift;
+    my $benchmark = shift;
+    my %args = @_;
     my $self = {
-        raw => {},
-        combined => {},
+        benchmark => $benchmark,
+        args => \%args,
     };
     bless $self, $class;
     return $self;
+}
+
+sub output {
+    my $self = shift;
+    my $statistics = $self->{benchmark}->statistics;
+    return form "==============================";
 }
 
 1; # Magic true value required at end of module
@@ -26,11 +34,11 @@ __END__
 
 =head1 NAME
 
-HTML::Benchmark::Statistics - Performance analysis of web pages and sites
+HTML::Benchmark::Output::Form - display basic statistics
 
 =head1 VERSION
 
-This document describes HTML::Benchmark::Statistics version 0.0.1
+This document describes HTML::Benchmark::Output::Form version 0.0.1
 
 =head1 SYNOPSIS
 
