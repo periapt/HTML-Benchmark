@@ -41,9 +41,7 @@ sub new {
 sub benchmark {
     my $self = shift;
     my $url = shift;
-    my $uri = URI->new($url);
-    my $website = ($uri->scheme).'://'.($uri->host);
-    my $path = $uri->path;
+    my ($website, $path) = _split_url($url);
     my $item = $path;
     my ($response, $interval) = $self->get_and_time($url);
     my $status = $response->code;
@@ -96,6 +94,18 @@ sub generate_uuid {
     generate($uuid);
     $uuid = encode_base64($uuid);
     return $uuid;
+}
+
+sub _split_url {
+    my $url = shift;
+    my $uri = URI->new($url);
+    my $website = ($uri->scheme).'://'.($uri->host);
+    if ($uri->port) {
+        $website .= ":";
+        $website .= $uri->port;
+    }
+    my $path = $uri->path;
+    return ($website, $path);
 }
 
 1; # Magic true value required at end of module
