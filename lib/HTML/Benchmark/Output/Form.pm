@@ -26,7 +26,19 @@ sub new {
 sub output {
     my $self = shift;
     my $statistics = $self->{benchmark}->statistics;
-    return form "==============================";
+    my @results = $statistics->get_statistics;
+    my $format = "| {<<{40}<<<} | {<<<{18}<<<<<<} |";
+    my $string =        form "-"x65;
+    $string .=          form $format, 'Path', 'Mean Download time';
+    $string .=          form "="x65;
+    foreach my $r (@results) {
+        my $website = $r->{website};
+        my $path = $r->{path};
+        my $download_time = $r->{download_time}->mean;
+        $string   .=    form $format, $path, $download_time;
+    }
+    $string .=          form "-"x65;
+    return $string;                            
 }
 
 1; # Magic true value required at end of module
