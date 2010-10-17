@@ -6,13 +6,15 @@ use HTML::Benchmark;
 use HTML::Benchmark::Output::Form;
 
 my %args = ();
+my $iterations = $ARGV{'--iterations'};
 if ($ARGV{'--label'}) {
     $args{label} = $ARGV{'--label'};
 }
 
 my $ua = HTML::Benchmark->new(%args);
-$ua->benchmark($ARGV{'--page'});
-
+for(my $i = 0; $i < $iterations; $i++) {
+    $ua->benchmark($ARGV{'--page'});
+}
 my $output = HTML::Benchmark::Output::Form->new($ua);
 print $output->output;
 
@@ -47,6 +49,15 @@ Single website to test
 =item --label <string>
 
 Label to group related tests.
+
+=item --iterations <i>
+
+Number of times to run experiment.
+
+=for Euclid:
+    i.type: integer, i>0
+    i.default: 10
+
 
 =item --version
 
