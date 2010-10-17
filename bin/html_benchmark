@@ -7,9 +7,7 @@ use HTML::Benchmark::Output::Form;
 
 my %args = ();
 my $iterations = $ARGV{'--iterations'};
-if ($ARGV{'--label'}) {
-    $args{label} = $ARGV{'--label'};
-}
+$args{label} = $ARGV{'--label'};
 
 my $ua = HTML::Benchmark->new(%args);
 for(my $i = 0; $i < $iterations; $i++) {
@@ -44,20 +42,27 @@ of websites.
 
 =item --page <url>
 
-Single website to test
+Single web page to test. This defaults to "http://localhost/".
 
-=item --label <string>
+=for Euclid:
+    url.type: string
+    url.default: "http://localhost/"
 
-Label to group related tests.
+=item --label <s>
+
+Label to group related tests. This defaults to "TEST".
+
+=for Euclid:
+    s.type: string
+    s.default: "TEST"
 
 =item --iterations <i>
 
-Number of times to run experiment.
+Number of times to run experiment per page. This defaults to 10.
 
 =for Euclid:
     i.type: integer, i>0
     i.default: 10
-
 
 =item --version
 
