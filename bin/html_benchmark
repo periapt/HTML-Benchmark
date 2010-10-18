@@ -9,10 +9,21 @@ my %args = ();
 my $iterations = $ARGV{'--iterations'};
 $args{label} = $ARGV{'--label'};
 
+my @pages;
+if (ref $ARGV{'--page'} eq 'ARRAY') {
+    push @pages, @{$ARGV{'--page'}};
+}
+else {
+    push @pages, $ARGV{'--page'};
+}
+
 my $ua = HTML::Benchmark->new(%args);
 for(my $i = 0; $i < $iterations; $i++) {
-    $ua->benchmark($ARGV{'--page'});
+    foreach my $p (@pages) {
+        $ua->benchmark($p);
+    }
 }
+
 my $output = HTML::Benchmark::Output::Form->new($ua);
 print $output->output;
 
@@ -40,12 +51,12 @@ of websites.
 
 =over
 
-=item --page <url>
+=item --page <url>...
 
 Single web page to test. This defaults to "http://localhost/".
 
 =for Euclid:
-    url.type: string
+    url.type: /http\:\/\/[\w\-\/\?\&\%\.]+/
     url.default: "http://localhost/"
 
 =item --label <s>
@@ -61,7 +72,7 @@ Label to group related tests. This defaults to "TEST".
 Number of times to run experiment per page. This defaults to 10.
 
 =for Euclid:
-    i.type: integer, i>0
+    i.type: +integer
     i.default: 10
 
 =item --version
