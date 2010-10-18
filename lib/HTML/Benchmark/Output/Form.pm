@@ -27,17 +27,17 @@ sub output {
     my $self = shift;
     my $statistics = $self->{benchmark}->statistics;
     my @results = $statistics->get_statistics;
-    my $format = "| {<<{40}<<<} | {<<<{18}<<<<<<} |";
-    my $string =        form "-"x65;
-    $string .=          form $format, 'Path', 'Mean Download time';
-    $string .=          form "="x65;
+    my $format = "| {<<{32}<<} | {<<{20}<<} | {<<{18}<<} |";
+    my $string =        form "-"x80;
+    $string .=          form $format, 'Website', 'Path', 'Mean Download time';
+    $string .=          form "="x80;
     foreach my $r (@results) {
         my $website = $r->{website};
         my $path = $r->{path};
         my $download_time = $r->{download_time}->mean;
-        $string   .=    form $format, $path, $download_time;
+        $string   .=    form $format, $website, $path, $download_time;
     }
-    $string .=          form "-"x65;
+    $string .=          form "-"x80;
     return $string;                            
 }
 

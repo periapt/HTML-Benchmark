@@ -53,7 +53,7 @@ of websites.
 
 =item --page <url>...
 
-Single web page to test. This defaults to "http://localhost/".
+Add a single web page to test. This defaults to "http://localhost/".
 
 =for Euclid:
     url.type: /http\:\/\/[\w\-\/\?\&\%\.]+/

@@ -100,7 +100,7 @@ sub _split_url {
     my $url = shift;
     my $uri = URI->new($url);
     my $website = ($uri->scheme).'://'.($uri->host);
-    if ($uri->port) {
+    if ($uri->port and $uri->port != 80) {
         $website .= ":";
         $website .= $uri->port;
     }
