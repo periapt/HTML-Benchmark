@@ -9,15 +9,21 @@ my %args = ();
 my $iterations = $ARGV{'--iterations'};
 $args{label} = $ARGV{'--label'};
 
+my $ua = HTML::Benchmark->new(%args);
+
 my @pages;
-if (ref $ARGV{'--page'} eq 'ARRAY') {
-    push @pages, @{$ARGV{'--page'}};
+my $sitemap_arg = $ARGV{'--sitemap'};
+my $page_arg = $ARGV{'--page'};
+foreach my $s (@$sitemap_arg) {
+    push @pages, $ua->split_sitemap($s);
 }
-else {
-    push @pages, $ARGV{'--page'};
+if (ref $page_arg eq 'ARRAY') {
+    push @pages, @$page_arg;
+}
+if (not @pages) {
+    push @pages, 'http://localhost/';
 }
 
-my $ua = HTML::Benchmark->new(%args);
 for(my $i = 0; $i < $iterations; $i++) {
     foreach my $p (@pages) {
         $ua->benchmark($p);
@@ -53,11 +59,18 @@ of websites.
 
 =item --page <url>...
 
-Add a single web page to test. This defaults to "http://localhost/".
+Add web pages to test. If neither I<--page> nor I<--sitemap>
+options are used a default of "http://localhost/" is assumed.
 
 =for Euclid:
     url.type: /http\:\/\/[\w\-\/\?\&\%\.]+/
-    url.default: "http://localhost/"
+
+=item --sitemap <url>...
+
+Add the pages listed in the specified sitemaps.
+
+=for Euclid:
+    url.type: /http\:\/\/[\w\-\/\?\&\%\.]+/
 
 =item --label <s>
 

@@ -4,6 +4,8 @@ use LWP::UserAgent;
 use DateTime;
 use URI;
 use HTML::Benchmark::Statistics;
+use XML::LibXML;
+use XML::LibXML::XPathContext;
 
 # Used by get_and_time
 use Time::HiRes qw(time tv_interval);
@@ -94,6 +96,26 @@ sub generate_uuid {
     generate($uuid);
     $uuid = encode_base64($uuid);
     return $uuid;
+}
+
+sub split_sitemap {
+    my $self = shift;
+    my $sitemap = shift;
+    my $response = $self->useragent->get($sitemap);
+    if ($response->is_success) {
+        my $content = $response->decoded_content;
+        my $parser = XML::LibXML->new;
+        my $doc = $parser->parse_string($content);
+        my $xpc = XML::LibXML::XPathContext->new;
+        $xpc->registerNs('x',
+            $doc->getDocumentElement->getNamespaces->getValue
+        );
+        return $xpc->findnodes('//x:loc/child::text()', $doc);
+    }
+    else {
+        warn $response->status_line;
+    }
+    return;
 }
 
 sub _split_url {

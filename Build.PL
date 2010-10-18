@@ -27,6 +27,7 @@ my $builder = Module::Build->new(
         'URI'=>0,
         'Params::Validate'=>0,
         'Statistics::Descriptive' => 0,
+        'XML::LibXML' => 0,
         # libwww-perl stuff here
         'HTTP::Daemon' => 0,
         'LWP::UserAgent' => 0,
