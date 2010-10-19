@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/HTML/Benchmark.pm',
     build_requires => {
         'Test::More' => 0,
-        'Tie::ShareLite' => 0,
+        'Test::TCP' => 0,
     },
     script_files=>      [
         'bin/html_benchmark',
@@ -23,6 +23,7 @@ my $builder = Module::Build->new(
         'MIME::Base64' => 0,
         'Params::Validate'=>0,
         'Perl6::Form' => 0,
+        'Perl6::Slurp' => 0,
         'Readonly' => 0,
         'URI'=>0,
         'Statistics::Descriptive' => 0,
