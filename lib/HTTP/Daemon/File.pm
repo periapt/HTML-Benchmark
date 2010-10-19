@@ -15,6 +15,7 @@ use version; our $VERSION = qv('0.0.1');
 
 my %DocumentRoot;
 my %FileNotFound;
+my %DefaultFile;
 
 sub new {
     my $class = shift;
@@ -27,6 +28,9 @@ sub new {
     }
     if ($opts{FileNotFound}) {
         $FileNotFound{$self} = $opts{FileNotFound};
+    }
+    if ($opts{DefaultFile}) {
+        $DefaultFile{$self} = $opts{DefaultFile};
     }
     my $fnf = $self->document_root."/".$self->file_not_found;
     croak "File not found file not found: $fnf" if not -r $fnf;
@@ -45,24 +49,34 @@ sub file_not_found {
     return $FileNotFound{$self};
 }
 
+sub default_file {
+    my $self = shift;
+    return $DefaultFile{$self};
+}
+
 sub build_response {
     my $self = shift;
-    my $path = shift || $self->file_not_found;
+    my $path = shift;
+    $path =~ s{/\z}{}gxms;
+    $path ||= $self->default_file;
     my $file = $self->document_root."/$path";
     if (-r $file) {
         my $type = $self->mime_type($file);
+        my $content = slurp $file;
         return HTTP::Response->new(
             200,
             'OK',
             ['Content-Type'=>$type],
-            slurp $file,
+            $content,
         );
     }
+    $file = $self->document_root."/".$self->file_not_found,
+    my $content = slurp $file;
     return HTTP::Response->new(
         404,
         'File not found',
         ['Content-Type'=>'text/html'],
-        slurp  $self->document_root."/".$self->file_not_found,
+        $content,
     );
 }
 
