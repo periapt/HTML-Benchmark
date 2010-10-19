@@ -2,23 +2,29 @@
 use strict;
 use warnings;
 use Getopt::Euclid;
+use Config::Std;
 use HTML::Benchmark;
 use HTML::Benchmark::Output::Form;
+use Readonly;
+use File::HomeDir;
+
+Readonly my $config_file        => $ARGV{'--config'}
+                                 ? $ARGV{'--config'}
+                                 : File::HomeDir->my_home.'/.html_benchmarkrc';
+my %config;
+if (-r $config_file) {
+    read_config $config_file => %config;
+}
 
 my %args = ();
-my $iterations = $ARGV{'--iterations'};
-$args{label} = $ARGV{'--label'};
+my $iterations = get_arg('iterations');
+$args{label} = get_arg('label');
 
 my $ua = HTML::Benchmark->new(%args);
 
-my @pages;
-my $sitemap_arg = $ARGV{'--sitemap'};
-my $page_arg = $ARGV{'--page'};
-foreach my $s (@$sitemap_arg) {
+my @pages = get_arg('page');
+foreach my $s (get_arg('sitemap')) {
     push @pages, $ua->split_sitemap($s);
-}
-if (ref $page_arg eq 'ARRAY') {
-    push @pages, @$page_arg;
 }
 if (not @pages) {
     push @pages, 'http://localhost/';
@@ -32,6 +38,22 @@ for(my $i = 0; $i < $iterations; $i++) {
 
 my $output = HTML::Benchmark::Output::Form->new($ua);
 print $output->output;
+exit(0);
+
+sub get_arg {
+    my $name = shift;
+    my $value = $config{main}{$name};
+    if (not $value) {
+        $value = $ARGV{"--$name"};
+    }
+    if (wantarray and not $value) {
+        return;
+    }
+    elsif (wantarray and ref $value eq 'ARRAY') {
+        return @$value;
+    }
+    return $value;
+}
 
 __END__
 
@@ -57,10 +79,18 @@ of websites.
 
 =over
 
+=item --config <file>
+
+Specify an alternative file location for a config file rather
+than the C<.html_benchmarkrc> file in the home directory. Most of the
+main options can be set default values in the main section of config file.
+
 =item --page <url>...
 
 Add web pages to test. If neither I<--page> nor I<--sitemap>
 options are used a default of "http://localhost/" is assumed.
+This option can also be set by the I<page> option in the 
+main section of the config file.
 
 =for Euclid:
     url.type: /http\:\/\/[\w\-\/\?\&\%\.]+/
@@ -68,6 +98,8 @@ options are used a default of "http://localhost/" is assumed.
 =item --sitemap <url>...
 
 Add the pages listed in the specified sitemaps.
+This option can also be set by the I<sitemap> option in the 
+main section of the config file.
 
 =for Euclid:
     url.type: /http\:\/\/[\w\-\/\?\&\%\.]+/
@@ -75,6 +107,8 @@ Add the pages listed in the specified sitemaps.
 =item --label <s>
 
 Label to group related tests. This defaults to "TEST".
+An alternative default can be set by the I<label> field
+in the main section of the config file.
 
 =for Euclid:
     s.type: string
@@ -83,6 +117,8 @@ Label to group related tests. This defaults to "TEST".
 =item --iterations <i>
 
 Number of times to run experiment per page. This defaults to 10.
+An alternative default can be set by the I<iterations> field
+in the main section of the config file.
 
 =for Euclid:
     i.type: +integer

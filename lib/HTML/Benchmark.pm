@@ -110,7 +110,8 @@ sub split_sitemap {
         $xpc->registerNs('x',
             $doc->getDocumentElement->getNamespaces->getValue
         );
-        return $xpc->findnodes('//x:loc/child::text()', $doc);
+        my @nodes = $xpc->findnodes('//x:loc/child::text()', $doc);
+        return map {$_->textContent} @nodes;
     }
     else {
         warn $response->status_line;
