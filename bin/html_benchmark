@@ -21,6 +21,9 @@ my $iterations = get_arg('iterations');
 $args{label} = get_arg('label');
 
 my $ua = HTML::Benchmark->new(%args);
+if (get_arg('benchmark')) {
+    $ua->statistics->set_benchmark(get_arg('benchmark'));
+}
 
 my @pages = get_arg('page');
 foreach my $s (get_arg('sitemap')) {
@@ -36,7 +39,7 @@ for(my $i = 0; $i < $iterations; $i++) {
     }
 }
 
-my $output = HTML::Benchmark::Output::Form->new($ua);
+my $output = HTML::Benchmark::Output::Form->new($ua, %{$config{Form}});
 print $output->output;
 exit(0);
 
@@ -103,6 +106,14 @@ main section of the config file.
 
 =for Euclid:
     url.type: /http\:\/\/[\w\-\/\?\&\%\.]+/
+
+=item --benchmark <i>
+
+Set a maximal mean download time above which a warning will be written 
+to standard output. This check is done during the calculation of statistics.
+
+=for Euclid:
+    i.type: +number
 
 =item --label <s>
 

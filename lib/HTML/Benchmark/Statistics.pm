@@ -124,7 +124,20 @@ sub get_statistics {
         }
     }
 
+    if ($self->{benchmark}) {
+        foreach my $k (keys %statistics) {
+            warn "$k exceeded benchmark of $self->{benchmark}"
+                if $statistics{$k}->{download_time}->mean > $self->{benchmark};
+        }
+    }
+
     return _sort_by_dates('min_date', values %statistics);
+}
+
+sub set_benchmark {
+    my $self = shift;
+    my $benchmark = shift;
+    $self->{benchmark} = $benchmark;
 }
 
 sub _compile_key {
