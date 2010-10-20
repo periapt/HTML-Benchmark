@@ -1,10 +1,11 @@
 package HTML::Benchmark::Parser;
 use base HTML::Parser;
 
+use URI::Split qw(uri_split);
+
 use warnings;
 use strict;
 use Carp;
-
 
 use version; our $VERSION = qv('0.0.1');
 
@@ -14,7 +15,7 @@ sub new {
     my $class = shift;
     my $self = HTML::Parser->new(
         api_version => 3,
-        start_h  => [&_start, 'self,tagname,attr'],
+        start_h  => [\&_start, 'self,tagname,attr'],
         report_tags => ['link','script','img'],
     );
     $self->{b_link} = [];
@@ -33,6 +34,50 @@ sub extract_data {
 }
 
 sub _start {
+    my $self = shift;
+    my $tagname = shift;
+    my $attr = shift;
+    if ($tagname eq 'link') {
+        $self->_link($attr);
+    }
+    elsif ($tagname eq 'script') {
+        $self->_script($attr);
+    }
+    elsif ($tagname eq 'img') {
+        $self->_img($attr);
+    }
+    return;
+}
+
+sub _link {
+    my $self = shift;
+    my $attr = shift;
+    return if not $attr->{type};
+    return if not $attr->{href};
+    return if $attr->{type} ne 'text/css';
+    return if not uri_split($attr->{href});
+    push @{$self->{b_link}}, $attr->{href};
+    return;
+}
+
+sub _img {
+    my $self = shift;
+    my $attr = shift;
+    return if not $attr->{src};
+    return if not uri_split($attr->{src});
+    push @{$self->{b_img}}, $attr->{src};
+    return;
+}
+
+sub _script {
+    my $self = shift;
+    my $attr = shift;
+    return if not $attr->{type};
+    return if not $attr->{src};
+    return if $attr->{type} ne 'text/javascript';
+    return if not uri_split($attr->{src});
+    push @{$self->{b_script}}, $attr->{src};
+    return;
 }
 
 1; # Magic true value required at end of module
