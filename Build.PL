@@ -30,6 +30,7 @@ my $builder = Module::Build->new(
         'Time::HiRes' => 0,
         'version'    => 0,
         'XML::LibXML' => 0,
+        'HTML::Parser'=>'3',
         # libwww-perl stuff here
         'HTTP::Daemon' => 0,
         'LWP::UserAgent' => 0,
