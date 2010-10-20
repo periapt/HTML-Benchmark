@@ -46,22 +46,7 @@ sub benchmark {
     my ($website, $path) = _split_url($url);
     my $item = $path;
     my ($response, $interval) = $self->get_and_time($url);
-    my $status = $response->code;
-    my $type = $response->header('Content-Type');
-    if ($type =~ m{
-                    \A
-                    ([\w\/\-]+)
-                    ;
-                    \s+
-                    charset=
-                }xms
-    ) {
-        $type = $1;
-    }
-    my $length = 'n/a';
-    if ($response->is_success) {
-        $length = length $response->decoded_content;
-    }
+    my ($status, $type, $length) = $self->handle_response($response);
     my $uuid = $self->generate_uuid;
 
     $self->statistics->add_data(
@@ -79,6 +64,28 @@ sub benchmark {
     );
 
     return;
+}
+
+sub handle_response {
+    my $self = shift;
+    my $response = shift;
+    my $status = $response->code;
+    my $type = $response->header('Content-Type');
+    if ($type =~ m{
+                    \A
+                    ([\w\/\-]+)
+                    ;
+                    \s+
+                    charset=
+                }xms
+    ) {
+        $type = $1;
+    }
+    my $length = 'n/a';
+    if ($response->is_success) {
+        $length = length $response->decoded_content;
+    }
+    return ($status, $type, $length);
 }
 
 sub get_and_time {
