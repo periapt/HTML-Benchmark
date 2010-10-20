@@ -1,10 +1,10 @@
 package HTML::Benchmark::Parser;
+use base HTML::Parser;
 
 use warnings;
 use strict;
 use Carp;
 
-use HTML::Parser;
 
 use version; our $VERSION = qv('0.0.1');
 
