@@ -1,4 +1,5 @@
 use Test::More tests => 19;
+use Test::Deep;
 use strict;
 use warnings;
 use Carp;
@@ -19,14 +20,80 @@ test_tcp(
     },
     client => sub {
         my $port = shift;
-        my $url = "http://localhost:$port/";
+        my $url = "http://localhost:$port";
         use HTML::Benchmark;
         my $ua = HTML::Benchmark->new;
         isa_ok($ua, 'HTML::Benchmark');
         $ua->benchmark($url);
         my $statistics = $ua->statistics;
         my @raw_data = $statistics->get_raw_data;
-        is(scalar(@raw_data), 1, 'one datum');
+        cmp_deeply(
+            \@raw_data,
+            [
+                {
+                    website=>$url,
+                    path=>'',
+                    item=>ignore(),
+                    date=>ignore(),
+                    label=>'TEST',
+                    status=>200,
+                    succeeded=>1,
+                    run_uuid=>ignore(),
+                    download_time=>code(\&check_download_time),
+                    type=>'text/html',
+                    size=>ignore(),
+                },
+                {
+                    website=>$url,
+                    path=>'',
+                    item=>ignore(),
+                    #item=>'/',
+                    date=>ignore(),
+                    label=>'TEST',
+                    status=>200,
+                    succeeded=>1,
+                    run_uuid=>ignore(),
+                    download_time=>code(\&check_download_time),
+                },
+                {
+                    website=>$url,
+                    path=>'',
+                    item=>ignore(),
+                    #item=>'/',
+                    date=>ignore(),
+                    label=>'TEST',
+                    status=>200,
+                    succeeded=>1,
+                    run_uuid=>ignore(),
+                    download_time=>code(\&check_download_time),
+                },
+                {
+                    website=>$url,
+                    path=>'',
+                    item=>ignore(),
+                    #item=>'/',
+                    date=>ignore(),
+                    label=>'TEST',
+                    status=>200,
+                    succeeded=>1,
+                    run_uuid=>ignore(),
+                    download_time=>code(\&check_download_time),
+                },
+                {
+                    website=>$url,
+                    path=>'',
+                    item=>ignore(),
+                    #item=>'/',
+                    date=>ignore(),
+                    label=>'TEST',
+                    status=>200,
+                    succeeded=>1,
+                    run_uuid=>ignore(),
+                    download_time=>code(\&check_download_time),
+                },
+            ],
+            'first iteration'
+        );
         my $raw_datum = $raw_data[0];
         is($raw_datum->{path}, '/', 'item');
         is($raw_datum->{item}, '/', 'path');
@@ -39,7 +106,7 @@ test_tcp(
         $ua->benchmark($url);
         $statistics = $ua->statistics;
         @raw_data = $statistics->get_raw_data;
-        is(scalar(@raw_data), 2, 'two datum');
+        is(scalar(@raw_data), 10, 'two datum');
         $raw_datum = $raw_data[0];
         is($raw_datum->{path}, '/', 'item');
         is($raw_datum->{item}, '/', 'path');
@@ -51,3 +118,10 @@ test_tcp(
         is($raw_datum->{size}, 2273, 'size');
     }
 );
+
+sub check_download_time {
+    my $got_v = shift;
+    return 1 if $got_v < 1;
+    return (0, "$got_v is a long time");
+}
+

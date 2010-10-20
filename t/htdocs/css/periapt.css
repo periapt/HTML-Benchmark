@@ -1,0 +1,225 @@
+/*
+ * Copyright 2009 Periapt Technologies Ltd 
+ *
+ */
+
+@import "/css/tagcloud.css"; 
+
+/* general */
+.content_central {
+	margin-right: 60px;
+	min-height: 200px;
+}
+
+ 
+#find_bottom {
+	clear: both;
+	width: 100%;
+	margin-top: 1em;
+	height: 0;
+}
+
+body {
+    font: 15px/1.231 serif;
+}
+body p {
+    text-align: justify;
+    margin-bottom: 0.3em;
+}
+h1 {
+    font-size: 200%;
+    font-weight: bolder;
+    margin: 0.5em 0;
+    clear: both;
+}
+h2 {
+    font-size: 130%;
+    font-weight: bold;
+    margin: 0.3em 0;
+}
+ul {
+    padding: 1em;
+}
+ul li {
+    list-style-type: disc;
+    list-style-position: inside;
+}
+
+
+/* links */
+a[href] {
+  color: #25480D;
+  text-decoration: none;
+}
+a[href]:link {
+  text-decoration: none;
+}
+a[href]:visited {
+  font-style: italic;
+  color: purple;
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+
+#hd { 
+  width: 100%;
+  padding: 0.2em 0 0 0;
+  margin-bottom: 0;
+}
+
+#bd {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-image: url("/img/rightside3.gif");
+  background-repeat: repeat-y;
+  background-position: 100% 0;
+}
+#ft{
+  border-top: thick solid #25480D;
+  font-size: 80%;
+  margin-top: 0;
+  padding: 0.2em 0 0.2em 0;
+  text-align: right;
+  height: 31px;
+  width: 100%; 
+  background-color: #AAFF7A;
+}
+#ft img {
+  float: left;
+  margin-left: 2px;
+}
+#ft span {
+  margin-right: 1em;
+}
+#left {
+  width: 180px;
+  background-image: url("/img/amuletsbackg.gif");
+  background-repeat: repeat-y;
+}
+#left #left-column {
+  padding: 5px 40px 0 40px;
+  margin-bottom: -4px;
+}
+
+#left img {
+  clear: both;
+  margin: 0 0 4px 0;
+}
+
+.yui-t3 #yui-main{
+  padding: 0.2em 100px 0 0;
+  margin-left: -420px;
+}
+.yui-t3 #yui-main .yui-b {
+  margin-left: 410px;
+}
+
+/*  header structure 
+   #header_wrap includes (logo, htmltagcloud)
+*/
+
+#header_wrap {
+	height: 156px;
+	display: table;
+}
+#logo {
+  display: table-cell;
+}
+
+.htmltagcloud {
+	vertical-align: top;
+  display: table-cell;
+    height: 155px;
+    width: 390px;
+    padding-right: 1px;
+}
+/* italic stuff used in special comments etc */
+p.italic {
+  font-style: italic;
+}
+p.italic img {
+  float: left;
+  margin-bottom: 10px;
+}
+
+.blockquote {
+  background: #AAFF7A;
+  margin: 10px;
+  padding: 10px;
+  font-size: 85%;
+}
+/* tables */
+caption {
+  font-size: 120%;
+  font-weight: bold;
+  margin: 10px;
+}
+
+th {
+  text-align: center;
+}
+
+table, td, tr, th {
+  border: thin solid #25480D;
+  border-collapse: collapse;
+  border-spacing: 0;
+  padding: 3px;
+}
+/* forms */
+fieldset{
+  border: thin solid #25480D;
+  padding: 1em;
+  color: #25480D;
+}
+fieldset table {
+  border-width: 0;
+  border-color: white;
+  border-style: hidden;
+}
+fieldset tr {
+  border-width: 0;
+  border-color: white;
+  border-style: hidden;
+}
+fieldset td {
+  border-width: 0;
+  border-color: white;
+  border-style: hidden;
+}
+/* dfv */
+.dfv-errors {
+  color: red;
+  padding: 2em;
+  font-weight: bold;
+}
+.hide {
+  display: none;
+}
+
+.imageethical {
+	float: right;
+	margin: 0 1em 1em 1em;
+	display: inline;
+}
+
+/* front page */
+.imageright {
+	float: right;
+	width: 360px;
+	margin: 0 1em 1em 1em;
+	display: inline;
+}
+
+#dyn01 {
+  font-size: 150%; 
+  font-family: sans-serif;
+}
+
+.small {
+	font-size: 50%;
+}
+
+

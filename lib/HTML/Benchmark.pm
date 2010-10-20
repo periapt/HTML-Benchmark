@@ -6,6 +6,7 @@ use URI;
 use HTML::Benchmark::Statistics;
 use XML::LibXML;
 use XML::LibXML::XPathContext;
+use HTML::Benchmark::Parser;
 
 # Used by get_and_time
 use Time::HiRes qw(time tv_interval);
@@ -46,7 +47,8 @@ sub benchmark {
     my ($website, $path) = _split_url($url);
     my $item = $path;
     my ($response, $interval) = $self->get_and_time($url);
-    my ($status, $type, $length) = $self->handle_response($response);
+    my ($status, $type, $length, $content, $succeeded)
+        = $self->handle_response($response);
     my $uuid = $self->generate_uuid;
 
     $self->statistics->add_data(
@@ -55,13 +57,37 @@ sub benchmark {
         item => $item,
         download_time => $interval,
         status => $status,
-        succeeded => $response->is_success,
+        succeeded => $succeeded,
         type => $type,
         size => $length,
         label => $self->label,
         date => DateTime->now(),
         run_uuid => $uuid,
     );
+
+    my $parser = HTML::Benchmark::Parser->new;
+    my ($css, $js, $img) = $parser->extract_data($content);
+
+    foreach my $s (@$css, @$js, @$img) {
+        $url = URI->new_abs($s, $website);
+        ($response, $interval) = $self->get_and_time($url);
+        ($status, $type, $length, $content, $succeeded)
+            = $self->handle_response($response);
+
+        $self->statistics->add_data(
+            website => $website,
+            path => $path,
+            item => $s,
+            download_time => $interval,
+            status => $status,
+            succeeded => $succeeded,
+            type => $type,
+            size => $length,
+            label => $self->label,
+            date => DateTime->now(),
+            run_uuid => $uuid,
+        );
+    }
 
     return;
 }
@@ -82,10 +108,13 @@ sub handle_response {
         $type = $1;
     }
     my $length = 'n/a';
-    if ($response->is_success) {
-        $length = length $response->decoded_content;
+    my $content = '';
+    my $succeeded = $response->is_success;
+    if ($succeeded) {
+        $content = $response->decoded_content;
+        $length = length $content;
     }
-    return ($status, $type, $length);
+    return ($status, $type, $length, $content, $succeeded);
 }
 
 sub get_and_time {
