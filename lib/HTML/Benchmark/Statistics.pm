@@ -14,7 +14,7 @@ use version; our $VERSION = qv('0.0.1');
 sub new {
     my $class = shift;
     my $self = {
-        raw => {},
+        raw => [],
         combined => {},
     };
     bless $self, $class;
@@ -36,8 +36,7 @@ sub add_data {
         label => 1,
         date => {mandatory => 1, isa=>'DateTime'},
     });       
-    my $raw_key = _compile_key(\%args, ['website','path','item','run_uuid']);
-    $self->{raw}->{$raw_key} = \%args;
+    push @{$self->{raw}}, \%args;
 
     return unless $args{succeeded};
 
@@ -76,7 +75,7 @@ sub add_data {
 
 sub get_raw_data {
     my $self = shift;
-    return _sort_by_dates('date', values %{$self->{raw}});
+    return @{$self->{raw}};
 }
 
 sub get_combined_data {
@@ -163,10 +162,11 @@ sub _max_date {
     return $a_date->subtract_datetime($b_date)->is_positive ? $a_date : $b_date;
 }
 
-sub _cmp_dates {
-    my $a_date = shift;
-    my $b_date = shift;
-    my $c = $a_date->subtract_datetime($b_date);
+sub _cmp {
+    my $field = shift;
+    my $a = shift;
+    my $b = shift;
+    my $c = $b->{$field}->subtract_datetime($a->{$field});
     return 1 if $c->is_negative;
     return -1 if $c->is_positive;
     return 0;
@@ -175,7 +175,7 @@ sub _cmp_dates {
 sub _sort_by_dates {
     my $field = shift;
     my @dates = @_;
-    return reverse sort {_cmp_dates($a->{$field},$b->{$field}) } @dates;
+    return sort {_cmp($field, $a, $b) } @dates;
 }
 
 1; # Magic true value required at end of module
