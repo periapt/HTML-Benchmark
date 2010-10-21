@@ -26,8 +26,10 @@ if (get_arg('benchmark')) {
 }
 
 my @pages = get_arg('page');
-foreach my $s (get_arg('sitemap')) {
-    push @pages, $ua->split_sitemap($s);
+if (not $ARGV{'--page'} or $ARGV{'--sitemap'}) { 
+    foreach my $s (get_arg('sitemap')) {
+        push @pages, $ua->split_sitemap($s);
+    }
 }
 if (not @pages) {
     push @pages, 'http://localhost/';
@@ -46,7 +48,7 @@ exit(0);
 sub get_arg {
     my $name = shift;
     my $value = $config{main}{$name};
-    if (not $value) {
+    if ($ARGV{"--$name"}) {
         $value = $ARGV{"--$name"};
     }
     if (wantarray and not $value) {
